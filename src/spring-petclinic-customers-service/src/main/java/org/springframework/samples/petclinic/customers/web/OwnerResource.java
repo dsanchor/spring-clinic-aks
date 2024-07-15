@@ -15,12 +15,10 @@ import java.util.Optional;
 
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Flux;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
-import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,9 +38,6 @@ class OwnerResource {
 
     private final OwnerRepository ownerRepository;
 
-    @Autowired
-    private Sinks.Many<Message<String>> many;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(OwnerResource.class);
 
     /**
@@ -51,12 +46,6 @@ class OwnerResource {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Owner createOwner(@Valid @RequestBody Owner owner) {
-        LOGGER.info("+++Sending events+++");
-        many.emitNext(MessageBuilder.withPayload("New owner created: " + owner.getFirstName() + " " + owner.getLastName() + " with many pets ...").build(), Sinks.   EmitFailureHandler.FAIL_FAST);
-        for(int i = 0; i < 100; i++) {
-            many.emitNext(MessageBuilder.withPayload("Pet " + i).build(), Sinks.EmitFailureHandler.FAIL_FAST);
-        }
-
         return ownerRepository.save(owner);
     }
 
@@ -83,9 +72,11 @@ class OwnerResource {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateOwner(@PathVariable("ownerId") @Min(1) int ownerId, @Valid @RequestBody Owner ownerRequest) {
         final Optional<Owner> owner = ownerRepository.findById(ownerId);
-        final Owner ownerModel = owner.orElseThrow(() -> new ResourceNotFoundException("Owner "+ownerId+" not found"));
+        final Owner ownerModel = owner
+                .orElseThrow(() -> new ResourceNotFoundException("Owner " + ownerId + " not found"));
 
-        // This is done by hand for simplicity purpose. In a real life use-case we should consider using MapStruct.
+        // This is done by hand for simplicity purpose. In a real life use-case we
+        // should consider using MapStruct.
         ownerModel.setFirstName(ownerRequest.getFirstName());
         ownerModel.setLastName(ownerRequest.getLastName());
         ownerModel.setCity(ownerRequest.getCity());
