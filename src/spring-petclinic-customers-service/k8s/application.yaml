@@ -45,6 +45,8 @@ spec:
                 secretKeyRef:
                   name: secrets-server
                   key: SPRING_DATASOURCE_PASSWORD
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+              value: org.hibernate.dialect.MySQL57Dialect
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
