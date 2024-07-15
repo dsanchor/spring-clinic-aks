@@ -17,7 +17,6 @@ jobs:
               "spring-petclinic-vets-service",
               "spring-petclinic-visits-service",
               "spring-petclinic-api-gateway",
-              "spring-petclinic-admin-server",
             ],
         }
     steps:
