@@ -13,9 +13,6 @@ read -p "Enter appinsightsconnectionstring: " appinsightsconnectionstring
 # create namespace
 kubectl create namespace $namespace
 
-dbpassword=$(echo -n $dbpassword | base64 -w0)
-appinsightsconnectionstring=$(echo -n $appinsightsconnectionstring | base64 -w0)
-
 sed -e 's|#dbhost#|'$dbhost'|g' \
     -e 's|#dbname#|'$dbname'|g' \
     -e 's|#dbpassword#|'$dbpassword'|g' \
