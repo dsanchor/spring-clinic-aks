@@ -1,3 +1,7 @@
 spring:
   application:
     name: vets-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
